@@ -1,0 +1,86 @@
+<div class="container px-5 px-sm-0">
+
+  <% if @book.errors.any? %>
+    <div class="error_explanation">
+      <h3>
+        <%= @book.errors.count %> errors prohibited this book from being saved:
+      </h3>
+      <ul>
+        <% @book.errors.full_messages.each do |message| %>
+          <li>
+            <%= message %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <%= render 'layouts/sidebar', user: @user, book: @book %>
+
+    <div class="col-md-8 offset-md-1">
+      <h2>Books</h2>
+      
+      <div class="mb-2">
+        <%= link_to '新しい順', books_path(latest: "true") %> | 
+        <%= link_to '古い順', books_path(old: "true") %> | 
+        <%= link_to '評価の高い順', books_path(star_count: "true") %>
+      </div>
+  
+      <table class="table table-hover table-inverse">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Opinion</th>
+            <th>Tag</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @books.each do |book| %>
+            <tr>
+              <td>
+                <%= link_to user_path(book.user.id) do %>
+                  <% if book.user.profile_image.attached? %>
+                    <%= image_tag book.user.profile_image, size: "80x80" %>
+                  <% else %>
+                    <%= image_tag 'default-image', size: "80x80" %>
+                  <% end %>
+                <% end %>
+              </td>
+              <td>
+                <%= link_to book_path(book.id) do %>
+                  <%= book.title %>
+                <% end %>
+              </td>
+              <td>
+                <%= book.body %>
+              </td>
+              <td>
+                <% if book.category.present? %>
+                  <%=link_to book.category, searchtag_path(word: book.category) %>
+                <% end %>
+              </td>
+              <td id="favorite_<%= book.id %>">
+                <%= render "favorites/favorite", book: book %>
+              </td>
+              <td>
+                コメント数: <%= book.book_comments.count %>
+              </td>
+              <td>
+                閲覧数: <%= book.view_counts.count %>
+              </td>
+              <td>
+                <%= render "static.rate", book: book %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

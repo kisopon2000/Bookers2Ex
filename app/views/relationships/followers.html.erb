@@ -1,0 +1,44 @@
+<div class="container">
+  <div class="row">
+    <h2>Follower users</h2>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>image</th>
+          <th>name</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+          <tr>
+            <td>
+              <%= link_to user_path(user.id) do %>
+                <% if user.profile_image.attached? %>
+                  <%= image_tag user.profile_image, size: "80x80" %>
+                <% else %>
+                  <%= image_tag 'default-image', size: "80x80" %>
+                <% end %>
+              <% end %>
+            </td>
+            <td>
+              <%= user.name %>
+            </td>
+            <td>
+              フォロー数:<%= user.followings.count %>
+            </td>
+            <td>
+              フォロワー数:<%= user.followers.count %>
+            </td>
+            <td>
+              <%= link_to "Show", user_path(user.id) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

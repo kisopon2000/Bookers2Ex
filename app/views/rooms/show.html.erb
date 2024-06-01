@@ -1,0 +1,23 @@
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-8 col-lg-5 px-5 px-sm-0 mx-auto">
+      <h2><%= @follow_user.name %>さんとのチャット</h2>
+
+      <% @messages.each do |message| %>
+        <div>
+          <%= message.user.name %>: <%= message.message %>
+        </div>
+      <% end %>
+
+      <%= form_with model: @message, local:true do |f| %>
+        <%= f.hidden_field :room_id, value: @room.id %>
+        <div class="chat-form">
+          <%= f.text_field :message, class:"form-control" %>
+          <%= button_tag type: "submit", class: "btn btn-default" do %>
+            <i class="fa-solid fa-paper-plane fa-lg"></i>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

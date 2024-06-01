@@ -1,0 +1,69 @@
+@use '~bootstrap/scss/bootstrap';
+
+.liked {
+  color: red;
+}
+
+.comments-table {
+  border-top: 1px solid #dee2e6;
+}
+
+.comments-table th, .comments-table td {
+  padding: 0.75rem;
+  vertical-align: top;
+}
+
+.comment-form {
+  margin-top: 5px;
+}
+
+.follow-botton {
+  padding-left: 15px;
+}
+
+.search-forms {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.search-right {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 5px;
+  margin-right: 5px;
+  align-items: center;
+}
+
+.search-left {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  margin-top: 5px;
+  margin-right: 5px;
+  align-items: center;
+}
+
+.search-word {
+  width: 200px;
+}
+
+.search-select {
+  font-size: 0.875rem;
+  font-weight: 400;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+
+.chat-form {
+  display: flex;
+  margin-top: 10px;
+}
+
+.chat-button {
+  display: inline-block;
+}
+
+.group-member-list {
+  list-style: none;
+}

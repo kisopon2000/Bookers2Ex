@@ -1,0 +1,199 @@
+<div class="container px-5 px-sm-0">
+  <div class="row">
+    <%= render 'layouts/sidebar', user: @user, book: @book, is_room: @is_room, room: @room, room_id: @room_id, entry: @entry %>
+
+    <div class="col-md-8 offset-md-1">
+      <h2>Books</h2>
+
+      <table class="table table-hover table-inverse">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Opinion</th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @books.each do |book| %>
+            <tr>
+              <td>
+                <%= link_to user_path(book.user.id) do %>
+                  <% if book.user.profile_image.attached? %>
+                    <%= image_tag book.user.profile_image, size: "80x80" %>
+                  <% else %>
+                    <%= image_tag 'default-image', size: "80x80" %>
+                  <% end %>
+                <% end %>
+              </td>
+              <td>
+                <%= link_to book_path(book.id) do %>
+                  <%= book.title %>
+                <% end %>
+              </td>
+              <td>
+                <%= book.body %>
+              </td>
+              <td id="favorite_<%= book.id %>">
+                <%= render "favorites/favorite", book: book %>
+              </td>
+              <td>
+                コメント数:
+                <%= book.book_comments.count %>
+              </td>
+              <td>
+                <%= render "books/static.rate", book: book %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+  
+      <%= form_with url:user_book_search_path(@user), method: :get, local: false, class: "mb-5" do |f| %>
+        <div class="search-left">
+          <div>
+          <%= f.date_field :created_at, class: "search-select" %>
+          </div>
+          <div>
+            <%= f.submit "検索" %>
+          </div>
+        </div>
+      <% end %>
+  
+      <div id="book-search-result">
+        <% if @search_book.present? %>
+          <%= render "search", search_book: @search_book %>
+        <% end %>
+      </div>
+  
+      <h3>投稿数の前日比・前週比</h3>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>今日の投稿</th>
+            <th>前日の投稿</th>
+            <th>前日比</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <%= @book_today.count %>
+            </td>
+            <td>
+              <%= @book_yesterday.count %>
+            </td>
+            <% if @book_yesterday.count == 0 %>
+              <td>前日の投稿はなし</td>
+            <% else %>
+              <td>
+                <%= (@the_day_before * 100).round %>%
+              </td>
+            <% end %>
+          </tr>
+        </tbody>
+      </table>
+
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>今週の投稿</th>
+            <th>前週の投稿</th>
+            <th>前週比</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <%= @book_this_week.count %>
+            </td>
+            <td>
+              <%= @book_last_week.count %>
+            </td>
+            <% if @book_last_week.count == 0 %>
+              <td>先週の投稿はなし</td>
+            <% else %>
+              <td>
+                <%= (@the_week_before * 100).round %>%
+              </td>
+            <% end %>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>7日分の投稿数</h3>
+      <table class="table table-bordered ">
+        <tr>
+          <th>6日前</th>
+          <th>5日前</th>
+          <th>4日前</th>
+          <th>3日前</th>
+          <th>2日前</th>
+          <th>1日前</th>
+          <th>今日</th>
+        </tr>
+        <tr>
+          <td><%= @books.created_6days_ago.count %></td>
+          <td><%= @books.created_5days_ago.count %></td>
+          <td><%= @books.created_4days_ago.count %></td>
+          <td><%= @books.created_3days_ago.count %></td>
+          <td><%= @books.created_2days_ago.count %></td>
+          <td><%= @books.created_yesterday.count %></td>
+          <td><%= @books.created_today.count %></td>
+        </tr>
+      </table>
+      
+      <canvas id="bookcount-line-chart"></canvas>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).on('turbolinks:load', function() {
+    var ctx = document.getElementById("bookcount-line-chart");
+    var bookCountLineChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['6日前', '5日前', '4日前', '3日前', '2日前', '1日前', '今日'],
+        datasets: [
+          {
+            label: '投稿したBookの数',
+            data: [
+              <%= @books.created_6days_ago.count %>,
+              <%= @books.created_5days_ago.count %>,
+              <%= @books.created_4days_ago.count %>,
+              <%= @books.created_3days_ago.count %>,
+              <%= @books.created_2days_ago.count %>,
+              <%= @books.created_yesterday.count %>,
+              <%= @books.created_today.count %>
+            ],
+            borderColor: "rgba(0,0,255,1)",
+            backgroundColor: "rgba(0,0,0,0)",
+            tension: 0.4
+          }
+        ],
+      },
+      options: {
+        title: {
+          display: true,
+          text: '7日間の投稿数の比較'
+        },
+        responsive: true,
+        scales: {
+          yAxes: [{
+            ticks: {
+              suggestedMax: 10,
+              suggestedMin: 0
+            }
+          }],
+          x:{
+            stacked: true
+          },
+        },
+      }
+    });
+  });
+</script>

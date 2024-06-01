@@ -1,0 +1,60 @@
+<div class="container">
+  <div class="row">
+    <h2>
+      Books search for 
+      "<%= @word %>" 
+      tag
+    </h2>
+    
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Title</th>
+          <th>Opinion</th>
+          <th>Tag</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @books.each do |book| %>
+          <tr>
+            <td>
+              <%= link_to user_path(book.user.id) do %>
+                <% if book.user.profile_image.attached? %>
+                  <%= image_tag book.user.profile_image, size: "80x80" %>
+                <% else %>
+                  <%= image_tag 'default-image', size: "80x80" %>
+                <% end %>
+              <% end %>
+            </td>
+            <td>
+              <%= link_to book_path(book.id) do %>
+                <%= book.title %>
+              <% end %>
+            </td>
+            <td>
+              <%= book.body %>
+            </td>
+            <td>
+              <% if book.category.present? %>
+                <%=link_to book.category, searchtag_path(word: book.category) %>
+              <% end %>
+            </td>
+            <td id="favorite_<%= book.id %>">
+              <%= render "favorites/favorite", book: book %>
+            </td>
+            <td id="comment-count">
+              <%= render "book_comments/count", book: book %>
+            </td>
+            <td>
+              <%= render "books/static.rate", book: book %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="container px-5 px-sm-0">
+  <div class="row">
+    <%= render 'layouts/sidebar', user: @user, book: @book, is_room: @is_room, room: @room, room_id: @room_id, entry: @entry %>
+
+    <div class="col-md-8 offset-md-1">
+      <h2>Book detail</h2>
+      
+      <table class="table">
+        <tbody>
+          <td>
+            <%= link_to user_path(@book_show.user.id) do %>
+              <% if @book_show.user.profile_image.attached? %>
+                <%= image_tag @book_show.user.profile_image, size: "80x80" %>
+              <% else %>
+                <%= image_tag 'default-image', size: "80x80" %>
+              <% end %>
+              <br>
+              <%= @book_show.user.name %>
+            <% end %>
+          </td>
+          <td>
+            <%= link_to book_path(@book_show.id) do %>
+              <%= @book_show.title %>
+            <% end %>
+          </td>
+          <td>
+            <%= @book_show.body %>
+          </td>
+          <td>
+            <% if @book_show.category.present? %>
+              <%=link_to @book_show.category, searchtag_path(word: @book_show.category) %>
+            <% end %>
+          </td>
+          <td id="favorite_<%= @book_show.id %>">
+            <%= render "favorites/favorite", book: @book_show %>
+          </td>
+          <td id="comment-count">
+            <%= render "book_comments/count", book: @book_show %>
+          </td>
+          <td>
+            閲覧数: <%= @book_show.view_counts.count %>
+          </td>
+          <td>
+            <%= render "static.rate", book: @book_show %>
+          </td>
+          <% if @book_show.user == current_user %>
+            <td>
+              <%= link_to "Edit", edit_book_path(@book_show.id), class:"btn btn-success" %>
+            </td>
+            <td>
+              <%= link_to "Destroy", book_path(@book_show.id), method: :delete, class:"btn btn-danger", "data-confirm" => "本当に削除しますか？" %>
+            </td>
+          <% end %>
+        </tbody>
+      </table>
+      
+      <div id="comment-index">
+        <%= render "book_comments/index", book: @book_show %>
+      </div>
+      <div class="comment-form">
+        <%= render "book_comments/form", book: @book_show, book_comment: @book_comment %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,60 @@
+<div class="container px-5 px-sm-0">
+  <div class="row">
+    <%= render "layouts/sidebar", user: @user, book: @book, is_room: @is_room, room: @room, room_id: @room_id, entry: @entry %>
+
+    <div class="col-md-8 offset-md-1">
+      <h2>Group Detail</h2>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>グループ名</th>
+            <th>紹介文</th>
+            <th>メンバー</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <% if @group.group_image.attached? %>
+                <%= image_tag @group.group_image, size: "80x80" %>
+              <% else %>
+                <%= image_tag 'default-image', size: "80x80" %>
+              <% end %>
+            </td>
+            <td>
+              <%= @group.name %>
+            </td>
+            <td>
+              <%= @group.introduction %>
+            </td>
+            <td>
+              <% @group.users.each do |user| %>
+                <li class="group-member-list">
+                  <%= user.name %>
+                </li>
+              <% end %>
+            </td>
+            <td>
+              <% if @group.is_owned_by?(current_user) %>
+                <%= link_to "Edit", edit_group_path(@group.id), class:"btn btn-success" %>
+              <% elsif @group.includes_user?(current_user)%>
+                <%= link_to "Leave this group", group_group_users_path(@group.id), method: :delete, class: "btn btn-danger" %>
+              <% else %>
+                <%= link_to "Join this group", group_group_users_path(@group.id), method: :post, class:"btn btn-success" %>
+              <% end %>
+            </td>
+            <td>
+              <% if @group.is_owned_by?(current_user) %>
+                <%= link_to 'Notice an Event', group_new_mail_path(@group.id), class:"btn btn-info" %>
+              <% end %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
